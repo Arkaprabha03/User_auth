@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleChange = (e) => {
     setFormData({
@@ -27,13 +30,26 @@ const Login = () => {
 
       if (response.ok) {
         setMessage("Login successful!");
+        setIsLoggedIn(true); // Set login status to true
         console.log("User data:", data); // Debugging
       } else {
         setMessage(data.message || "Invalid email or password.");
+        setIsLoggedIn(false); // Set login status to false
       }
     } catch (error) {
       setMessage("An error occurred while logging in. Please try again.");
+      setIsLoggedIn(false); // Set login status to false
     }
+  };
+
+  // Navigate to the register page
+  const goToRegister = () => {
+    navigate("/register");
+  };
+
+  // Navigate to the user's page
+  const goToUsersPage = () => {
+    navigate("/users"); // Adjust the route based on your actual user page route
   };
 
   return (
@@ -73,6 +89,28 @@ const Login = () => {
           </div>
         </form>
         <p className="mt-4 text-center text-gray-600">{message}</p>
+
+        {/* Register Button */}
+        <div className="mt-4 text-center">
+          <button
+            onClick={goToRegister}
+            className="text-blue-500 hover:text-blue-700 font-semibold"
+          >
+            Don't have an account? Register here.
+          </button>
+        </div>
+
+        {/* Conditional Button to Navigate to User Page */}
+        {isLoggedIn && (
+          <div className="mt-4 text-center">
+            <button
+              onClick={goToUsersPage}
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-green-300"
+            >
+              Go to User Page
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

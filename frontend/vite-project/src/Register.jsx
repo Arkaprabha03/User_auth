@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const Register = () => {
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const [message, setMessage] = useState("");
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleChange = (e) => {
     setFormData({
@@ -13,7 +15,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const response = await fetch("http://localhost:5000/api/auth/register", {
         method: "POST",
@@ -22,13 +24,13 @@ const Register = () => {
         },
         body: JSON.stringify(formData),
       });
-  
+
       const data = await response.json();
-  
+
       // Debugging response and data
       console.log("Response status:", response.status);
       console.log("Response data:", data);
-  
+
       if (response.ok) {
         setMessage("Registration successful! Please login.");
       } else {
@@ -39,7 +41,11 @@ const Register = () => {
       setMessage("An error occurred. Please try again later.");
     }
   };
-  
+
+  // Navigate to login page after successful registration
+  const goToLogin = () => {
+    navigate("/");
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -88,6 +94,18 @@ const Register = () => {
         </form>
         {message && (
           <p className="mt-4 text-center text-sm text-gray-600">{message}</p>
+        )}
+
+        {/* Show 'Go to Login' button after successful registration */}
+        {message === "Registration successful! Please login." && (
+          <div className="mt-4 text-center">
+            <button
+              onClick={goToLogin}
+              className="w-full bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition duration-200"
+            >
+              Go to Login
+            </button>
+          </div>
         )}
       </div>
     </div>
